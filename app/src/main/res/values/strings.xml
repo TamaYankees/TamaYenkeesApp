@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Tama Yankees</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <!--
+        This is the name that users will see when interacting with this channel.
+        It should describe the category of notifications that will be sent through this channel
+     -->
+    <string name="default_notification_channel_name" translatable="true">News</string>
+    <string name="quickstart_message">Tama Yankees</string>
+    <string name="homepage">Homepage</string>
+    <string name="setting_label">Setting</string>
+    <string-array name="news">
+        <item>2018年3月25日　19時\n多摩春季大会主将会議</item>
+        <item>2018年3月31日　14-16時\n練習　関戸公園野球場</item>
+        <item>2018年4月14日　14-16時\n予定　諏訪北</item>
+        <item>2018年4月21日　12-14時\n予定　諏訪北</item>
+    </string-array>
+
+    <!-- Setting -->
+    <!--<string name="pref_id_title">ID</string>-->
+    <!--<string name="pref_id_summary">ID for login to homepage</string>-->
+    <!--<string name="pref_id_dialog_title">ID</string>-->
+    <!--<string name="pref_id_dialog_message">Set your ID</string>-->
+    <string name="pref_title_credential">Login Data to TY Homepage</string>
+    <string name="pref_summary_id">ID for login</string>
+    <string name="pref_summary_pass">Password for login</string>
+    <string name="pref_title_id">ID</string>
+    <string name="pref_title_pass">Pass</string>
+    <string name="pref_key_id">mid</string>
+    <string name="pref_key_pass">mpass</string>
+
+    <string name="pref_title_notification">Receiving Notification</string>
+    <string name="pref_title_schedule">Schedule</string>
+    <string name="pref_summary_notif_schedule">Receive schedule notification</string>
+    <string name="pref_title_scorebook">Scorebook</string>
+    <string name="pref_summary_notif_scorebook">Receive scorebook notification</string>
+
+</resources>

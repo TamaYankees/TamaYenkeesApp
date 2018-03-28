@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/pref_title_credential"
+        android:key="pref_settings">
+
+        <EditTextPreference
+            android:key="pref_key_id"
+            android:summary="@string/pref_summary_id"
+            android:title="@string/pref_title_id"
+            android:maxLength="5">
+        </EditTextPreference>
+        <EditTextPreference
+            android:key="pref_key_pass"
+            android:summary="@string/pref_summary_pass"
+            android:title="@string/pref_title_pass"
+            android:inputType="textPassword"
+            android:maxLength="50">
+        </EditTextPreference>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_title_notification"
+        android:key="pref_settings2">
+        <CheckBoxPreference
+            android:title="@string/pref_title_schedule"
+            android:key="pref_key_schedule"
+            android:summary="@string/pref_summary_notif_schedule"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:title="@string/pref_title_scorebook"
+            android:key="pref_key_scorebook"
+            android:summary="@string/pref_summary_notif_scorebook"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "332247415370",
+    "firebase_url": "https://t-yankees.firebaseio.com",
+    "project_id": "t-yankees",
+    "storage_bucket": "t-yankees.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:332247415370:android:8ccc5b897f50ba3c",
+        "android_client_info": {
+          "package_name": "jp.ne.t_yankees"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "332247415370-64jnl21qbah6p4pka6p2r3hbmuvvlatj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "jp.ne.t_yankees",
+            "certificate_hash": "27bb8519385f0e0e23b1f0c7f6a2dc2c53609062"
+          }
+        },
+        {
+          "client_id": "332247415370-4ofqvv76dg956k3pla75t64g3ntfvfma.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB81-vlPpQH7gXu-fBSQoZpXbX310_urWc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "332247415370-4ofqvv76dg956k3pla75t64g3ntfvfma.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

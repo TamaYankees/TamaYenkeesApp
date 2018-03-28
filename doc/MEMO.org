@@ -1,0 +1,220 @@
+* 状況／TODO
+
+https://console.firebase.google.com/project/t-yankees/notification
+に tama.yankees@gmail.com でログインするとこのアプリに通知を飛ばせるようになった。
+　※音を鳴らしたければ通知の設定で「通知音」を「有効」にしておく
+
+
+以下は仕様どおりの挙動
+ //  ------- 仕様（サンプルコードのコメントから） -------------------------------------------
+ // Notificationメッセージが通知された場合、このメソッドはアプリがForegroundにいる時だけ呼ばれる
+ // Backgroundにいる時は呼ばれないが、notificationが自動生成され通知欄に表示される。ユーザーが通知をタップするとアプリが表示される
+ //
+ // Dataメッセージの場合は foregroundにいても、backgroundにかかわらずこのメソッドは呼ばれる
+ // Firebaseコンソールからの通知はNotificationメッセージになる
+ ---------------------------------------------------------------------------------------
+
+    アプリがForegroundにいる場合は、ServiceのonMessageReceived ()が呼ばれることで
+    その中で、通知に設定した付随情報を取得し、インテントを飛ばし、Receiverで受け取りActivityに通知することができた。
+    これにより、Activityの画面上に付随情報を表示することができた。
+    なお、通知一覧には表示されない
+    
+    アプリがBackgroundにある時は、ServiceのonMessageReceived ()は呼ばれず
+    その代わり通知一覧に表示される
+    通知をタップするとアプリに移動するが、onMessageReceived()以降の処理は実行されない
+    よって上記の作りではActivityは更新されない
+    
+    ---> 参考）https://qiita.com/kirimin/items/f16b22625a365f5d64f3
+         background時はNofiationは自動生成される模様
+          "" プッシュメッセージに含めた値を元にシステムがNotificationを自動生成します。
+             タップ時にはデフォルトのActivityが表示され、intentのextraからdataに含めた値を取得する事が出来ます。
+          ""
+
+* <TODO>
+** DONE 外部ブラウザにPOSTメッセージを送信できない
+BackgroundのNotificationをタップ 
+-> Activity#onCreat() が呼ばれる 
+-> ExtraDataから URLの他、スケジュールを表すパラメータを受け取る
+-> これを元にしてスケジュールページを開きたい
+
+※ Notificationから受信するデータ例
+   url: http://t-yankees.sakura.ne.jp/websb3/s-calendar_shosai.cgi
+   mid:28, mpass:ty69, ymd:20180331
+
+http://t-yankees.sakura.ne.jp/websb3/s-calendar_shosai.cgi?ymd=20180331
+
+ GETリクエストは以下のようにすれば可能。パラメータを ?A=B&C=D... とURLに付加すると指定したページに遷移するが、認証情報も混ざるのでやりたくない
+  :   Uri uri = Uri.parse(redirectURL);
+  :   Intent i = new Intent(Intent.ACTION_VIEW,uri);
+  :   startActivity(i);
+
+_対応_
+    WebView webview = new WebView(this);
+    setContentView(webview);
+    String postData = "mid=" + mid + "&mpass=" + mpass + "&ymd=" + ymd;
+    webview.postUrl(redirectURL, postData.getBytes());
+
+** DONE Notification受信時のアプリの挙動
+参考）https://qiita.com/kirimin/items/f16b22625a365f5d64f3
+ - Foreground実行中の場合は、
+ 　　通知の内容をActivityにリンク表示し、リンクをクリックされるとWebサイトの該当ページに遷移させる
+
+ - Background実行中の場合は、
+ 　　通知をタップしたらActivityに遷移し、該当情報を表示するか、
+ 　　あるいは直接Webサイトに遷移する
+    --> 現状 onMessageReceived() 以降の処理でIntentは飛ばせている（自App向けに通知）のだから、
+      　これをURLのインテントを飛ばすようにすれば良いか？
+
+  
+    通知をタップした場合、Activity#onCreate()が呼ばれる
+    ここで、getIntent().getStringExtra() や getIntent().getExtras() を呼ぶことでデータが取得できる
+
+ - ややこしいのでActivityを持たないアプリにしたほうがいいか？（そういうことが可能なら）
+
+** DONE Firebaseのコンソール以外から通知を出す
+以下のようにすると送信と受信ができた。
+以下ではトピックを対象に通知している(*1)
+
+- Android アプリ側 (Activity#onCreate())
+---> トピック名を、"news" にしていることに注意
+:        FirebaseMessaging.getInstance().subscribeToTopic("news");
+
+- 送信処理
+: curl -X POST --header "Authorization: key=AAAATVt9Oko:APA91bEqQ_BaFRAvZqCFe7rdLK8Ym8_qkfJK_CgeBDYpY0-WTUL7_epxgiP7CnpVAXMq046BlyRWRs7UAYdINUshck0Md1zXpWxavGNKVek2XRsFjZYli2nE9zejQaVJZ_jwpdvxUJmB" --header "Content-Type: application/json"   https://fcm.googleapis.com/fcm/send  -d @fcm_data
+ファイル fcm_data
+{
+    "to": "/topics/news",
+    "priority": "high",
+    "notification": {
+        "title": "タイトル",
+        "body": "ボディ",
+        "sound": "default"
+    },
+    "data": {
+        "url": "http://t-yankees.sakura.ne.jp/websb3/s-calendar_shosai.cgi",
+        "ymd": "20180331"
+    }
+}
+
+--header "Authorization   にはサーバーキーを指定する。サーバーキーはFirebaseコンソールで対象のアプリの設定（左上の歯車）から「クラウド メッセージング」タブを開くと確認できる
+
+
+参考：
+http://kakakakakku.hatenablog.com/entry/2017/05/12/125542
+https://firebase.google.com/docs/cloud-messaging/android/topic-messaging?hl=ja
+https://firebase.google.com/docs/cloud-messaging/concept-options?hl=ja          メッセージの仕様
+https://firebase.google.com/docs/cloud-messaging/http-server-ref                メッセージのカスタマイズ
+
+(*1) プッシュ通知を送るターゲットは大きく3種類ある．
+    - ユーザーセグメント … 言語 / バージョン / ユーザープロパティなどを AND / OR 演算した集合体
+    - トピック … 任意のグループ
+    - 端末 … 特定の端末（登録トークン指定）
+
+
+
+
+*** 試行錯誤の記録
+http://kakakakakku.hatenablog.com/entry/2017/05/12/125542
+
+curl --header "Authorization: key=AAAA3YAQxrA:APA91bGpid8sd9py07SpBoA5-fROVYuvmbCnzpipCQch-p8C1iKN7aqdj3t5-JOyposQGyTIuvvdk7SbFgytOW4fvjdTZEwUrvddNE4C3ClQ7pPwrZJFqtb5uHzCIlkZw5_djDmNqPdt" \
+  --header "Content-type: application/json" \
+  https://fcm.googleapis.com/fcm/send \
+  -d @fcm_data
+
+
+
+参考）https://qiita.com/kwmt@github/items/6f81eaa9d0abe9c5fa96
+ curl --header "Authorization: key=<Server API Key>" --header Content-Type:"application/json" https://android.googleapis.com/gcm/send -d "{\"registration_ids\":[\"<Registration Token>\"],\"data\":{\"message\":\"Hello\"}}"
+
+参考）サーバーキー
+https://qiita.com/itouda/items/aa122c5da7ea4aafed7e
+
+
+https://qiita.com/flatfisher/items/bdec83caf3c7f9c8917c
+※サーバーキーはFirebaseコンソールから取得
+
+※Firefoxから参照した送付データ
+https://gcmcontextualcampaign-pa.clients6.google.com/v1/4/projects/332247415370/campaigns?alt=json&key=AIzaSyDovLKo3djdRbs963vqKdbj-geRWyzMTrg
+_クエリー文字列_
+	alt	json
+	key	AIzaSyDovLKo3djdRbs963vqKdbj-geRWyzMTrg
+_JSON_
+	apps	{…}
+		0	{…}
+			gmpAppId	1:951336355504:android:5920de3503a2d18c
+	audience	{…}
+		all	{}
+	campaignStatus	SCHEDULED
+	displayParameters	{…}
+		data	{…}
+			0	
+				key	url
+				value	http://t-yankees.sakura.ne.jp/websb3/s-calendar_shosai.cgi
+			1	
+				key	ymd
+				value	20180331
+		priority	HIGH
+		sound	default
+	expiryTimeSeconds	2419200
+	messageText	予定追加
+	scheduledTimeType	{…}
+		asap	{}
+	senderId	951336355504
+
+　
+curl \
+--header "Authorization: key=AAAA3YAQxrA:APA91bGpid8sd9py07SpBoA5-fROVYuvmbCnzpipCQch-p8C1iKN7aqdj3t5-JOyposQGyTIuvvdk7SbFgytOW4fvjdTZEwUrvddNE4C3ClQ7pPwrZJFqtb5uHzCIlkZw5_djDmNqPdt" \
+--header Content-Type:"application/json" \
+https://fcm.googleapis.com/fcm/send \
+-d "{
+  "to" : "/topics/何か適当に", 
+  "time_to_live" : 0,
+  "restricted_package_name" : "bundle id",
+  "notification" : {
+    "sound" : "default",
+    "badge" : "1",
+    "body_loc_key" :"KEY_ID",
+    "body_loc_args" : ["置き換え文字"],
+    "title_loc_key" : "TTL_KEY_ID",
+    "title_loc_args" :["置き換え文字"], 
+  }
+}"
+
+https://android.jlelse.eu/firebase-push-notification-using-curl-command-devoid-backend-e63795d282c4
+curl -X POST --header "Authorization: key=AAAA3YAQxrA:APA91bGpid8sd9py07SpBoA5-fROVYuvmbCnzpipCQch-p8C1iKN7aqdj3t5-JOyposQGyTIuvvdk7SbFgytOW4fvjdTZEwUrvddNE4C3ClQ7pPwrZJFqtb5uHzCIlkZw5_djDmNqPdt" \
+    --Header "Content-Type: application/json" \
+    https://fcm.googleapis.com/fcm/send \
+    -d "{\"to\":\"<FCM TOKEN>\",\"notification\":{\"body\":\"ENTER YOUR MESSAGE HERE\"}"
+
+
+** TODO とりあえずコミットとJIRAチケット整理
+- バックエンド側
+   通知を飛ばせるようになった。
+   JIRA : http://macbook-pro.local:8080/jira/browse/TY-31
+
+- アプリ側
+  現状をコミット
+  (その前に、ic_launcher.png など不要なファイルを消す)
+
+  JIRA Issue作成
+  - 通知を受信した時の処理（バックグラウンドにいる時）
+    --> 該当するスケジュールページを表示
+  - 通知を受信した時の処理（フォアグラウンドにいる時）
+     *仕様から考える*
+  - ホーム画面に機能を盛り込む(MainActivityの仕様)
+
+  - タイトルバーのカスタマイズ
+　　文字を小さくしたり...
+
+
+* 参考
+- push通知
+https://firebase.google.com/docs/cloud-messaging/?hl=ja
+https://firebase.google.com/docs/cloud-messaging/android/first-message?hl=ja
+https://firebase.google.com/docs/cloud-messaging/android/receive?hl=ja
+
+- 通知
+https://developer.android.com/guide/topics/ui/notifiers/notifications.html?hl=ja
+https://qiita.com/roga7zl/items/4c9e1b62db1b427a9226
+
+

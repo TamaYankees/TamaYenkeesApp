@@ -1,0 +1,84 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:t todo:t |:t
+#+TITLE: websb3
+#+DATE: <2018-03-25 Sun>
+#+AUTHOR: Takuya Sakakibara
+#+EMAIL: takuya@macbook-pro.local
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 25.1.1 (Org mode 9.1.6)
+
+
+* 自宅Macでの開発環境
+
+** 以下にソースを置く
+_/Library/WebServer/CGI-Executables/websb3_
+
++ソースは以下に置く+
++/Users/takuya/data/datas/多摩ヤンキース/www/websb3/+
++以下にシンボリックリンクを作成+
++/Library/WebServer/CGI-Executables/websb3+
+-->  /private/var/log/apache2/error_log  に以下のようなエラーが出てうまくいかなかった（/etc/apache2/httpd.conf に、Options FollowSymLinks Multiviews という設定はあるが...）
+[Sun Mar 25 18:21:21.881330 2018] [core:error] [pid 17195] [client ::1:54613] AH00037: Symbolic link not allowed or link target not accessible: /Library/WebServer/CGI-Executables/websb3
+
+
+
+** /etc/apache2/httpd.conf
+コメント除去
+LoadModule cgi_module libexec/apache2/mod_cgi.so
+    AddHandler cgi-script .cgi
+
+追加
+    AddHandler image/gif .gif
+    AddHandler text/css .css
+
+   (参考)http://christina04.blog.fc2.com/blog-entry-77.html
+
+** カスタマイズしたコードが定義するライブラリパスの変更
+k_calendar.cgi
+: # use lib "../../perl5", "../ty/admin/lib";
+: use lib "/Library/WebServer/tylib/perl5", "/Library/WebServer/tylib/lib";
+
+
+* カスタマイズ
+k_calendar.cgi
+
+スケジュールの登録・変更・削除時に Google Calendarのそうさを行う
+
+- 更新
+  GCal::update_schedule($event_id, $FORM{ymd}, $FORM{basho}, $FORM{naiyo}, $FORM{jikan}, $FORM{biko})
+
+- 新規登録
+
+        my $ret = GCal::insert_schedule($FORM{ymd}, $maxeda, $FORM{basho}, $FORM{naiyo}, $FORM{jikan}, $FORM{biko});
+        if($ret->{id}) {
+            SchMgr::upsert_gcal_id($sdata_file, $ret->{id});
+            $additional_msg = sprintf '<a href="%s" target="_blank">Google Calender にも登録しました</a>', $ret->{htmlLink};
+        }
+- 削除
+            my $ret = GCal::delete_schedule($event_id);
+
+
+
+
+* 操作とコードの流れ
+
+** スケジュール・新規登録
+| 操作                 |                                                              |
+|----------------------+--------------------------------------------------------------|
+| 「予定入力」         | k_calendar.cgi                                               |
+|----------------------+--------------------------------------------------------------|
+| カレンダーをクリック | k_calendar.cgi?ymd=20180415&ikzhp=&inpass=ty555&mode=hensyua |
+|                      | 画面に「自動メール一括送信する。」のチェックボックスがある   |
+|                      |                                                              |
+
+* Tips
+管理者用パスワード
+操作：「基本情報」>「管理者パスワード」
+保存先 : mst/kihon.cgi　の "pass"
+
+
