@@ -5,24 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/ty_back2"
+    android:background="@drawable/ty_back"
     tools:context="jp.ne.t_yankees.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:layout_height="42dp"
+        android:background="#cc233977"
         android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        android:theme="@style/ToolbarTheme"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    <!--android:theme="@style/ThemeOverlay.AppCompat.ActionBar"-->
     <ImageView
         android:id="@+id/ty_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="1dp"
         android:src="@drawable/t_yankees"
         />
+    <ListView
+        android:id="@+id/menuListview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="0dp"
+        android:background="#33FFFFFF"></ListView>
     <!--<TextView-->
     <!--android:id="@+id/informationTextView"-->
     <!--android:layout_width="wrap_content"-->

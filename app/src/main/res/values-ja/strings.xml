@@ -1,15 +1,19 @@
 <resources>
+    <string name="default_notification_channel_name" translatable="true">News</string>
     <string name="app_name">多摩ヤンキース</string>
     <string name="quickstart_message">多摩ヤンキース</string>
     <string name="homepage">ホームページ</string>
-    <string name="setting_label">設定</string>
     <string name="pref_title_credential">ホームページへのログイン</string>
     <string name="pref_summary_id">ホームページのログインに使用するID</string>
     <string name="pref_summary_pass">ログインに使用するパスワード</string>
+    <string name="pref_title_id">ユーザID</string>
+    <string name="pref_title_pass">パスワード</string>
     <string name="pref_title_notification">通知の受信</string>
     <string name="pref_title_schedule">スケジュール</string>
     <string name="pref_summary_notif_schedule">スケジュールの追加や変更のお知らせを受信する</string>
     <string name="pref_title_scorebook">スコアブック</string>
     <string name="pref_summary_notif_scorebook">スコアブックの追加や変更のお知らせを受信する</string>
+    <string name="setting_label">設定...</string>
+    <string name="version_info_label">バージョン情報...</string>
 
 </resources>

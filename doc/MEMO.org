@@ -1,5 +1,6 @@
 * 状況／TODO
 
+** 通知
 https://console.firebase.google.com/project/t-yankees/notification
 に tama.yankees@gmail.com でログインするとこのアプリに通知を飛ばせるようになった。
 　※音を鳴らしたければ通知の設定で「通知音」を「有効」にしておく
@@ -30,6 +31,80 @@ https://console.firebase.google.com/project/t-yankees/notification
              タップ時にはデフォルトのActivityが表示され、intentのextraからdataに含めた値を取得する事が出来ます。
           ""
 
+** 試合結果 
+
+*** 閲覧
+http://t-yankees.sakura.ne.jp/websb3/s-siai.cgi
+(data)
+ikzhp	
+mid	28
+mpass	ty69
+nen	2018
+nendo	2018
+tuki	03
+hi	18
+dai	1
+page	1
+siaim	
+
+
+
+*** 登録
+/websb3/k_seiseki.cgi
+
+aite_url	http://aite
+aite_urlk	
+dai	1
+delf	{…}
+0	20180403-1
+1	20180403-1
+gr	%8A%D6%8C%CB%8C%F6%89%80%96%EC%8B%85%8F%EA
+gyosu	
+hi	4
+ikzhp	
+inpass	ty555
+kai	1%89%F1%90%ED
+katimake	0
+key	mod
+kou0	%83%84%83%93%83L%81%5B%83XB
+kou1	
+kou10	7
+kou11	8
+kou12	9
+kou13	10
+kou14	11
+kou3	0
+kou4	1
+kou5	2
+kou6	3
+kou7	4
+kou8	5
+kou9	6
+koub	%83o%83b%83e%83%8A%81%5BB
+mid	
+mode_score	score
+msg	%83e%83X%83g%83f%81%5B%83%5E%82%C5%82%B7%81B
+nen	2018
+nendo	2018
+runbutton2	%93o%98%5E
+sen0	%83%84%83%93%83L%81%5B%83X
+sen1	
+sen10	8
+sen11	9
+sen12	10
+sen13	11
+sen14	12
+sen3	1
+sen4	2
+sen5	3
+sen6	4
+sen7	5
+sen8	6
+sen9	7
+senb	%83o%83b%83e%83%8A%81%5BA
+syusai	%91%BD%96%80%8Es%93%EE%8E%AE%96%EC%8B%85%98A%96%BF
+taikai	%8Ft%8BG%91%E5%89%EF
+tuki	4
 * <TODO>
 ** DONE 外部ブラウザにPOSTメッセージを送信できない
 BackgroundのNotificationをタップ 
