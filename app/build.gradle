@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'tama-yankees'
             keyPassword 'ty5555'
-            storeFile file('/Users/Shared/devel/Android/key/ty.keystore')
+            storeFile file('/Users/takuya/AndroidStudioProjects/TamaYankees/key/ty.keystore')
             storePassword 'ty5555'
         }
     }
@@ -15,7 +15,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
+        versionName "1.01b"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -27,6 +27,9 @@ android {
 //        debug {
 //            applicationIdSuffix = ".debug"
 //        }
+        debug {
+            signingConfig signingConfigs.config
+        }
     }
     android.applicationVariants.all { variant ->
         variant.outputs.all {

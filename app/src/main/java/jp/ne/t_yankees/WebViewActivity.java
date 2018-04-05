@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -15,7 +18,7 @@ import android.webkit.WebViewClient;
  * Created by takuya on 2018/04/04.
  */
 
-public class WebViewActivity extends Activity {
+public class WebViewActivity extends AppCompatActivity {
     private static final String TAG = "TY-WebViewActivity";
     private WebView webview;
 
@@ -23,8 +26,14 @@ public class WebViewActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
-        webview = (WebView) findViewById(R.id.webView);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.webview_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(false); // タイトル文字を消す
+
+        webview = (WebView) findViewById(R.id.webView);
         Intent intent = getIntent();
         if (intent != null) {
             webview.setWebViewClient(new WebViewClient());
@@ -61,5 +70,13 @@ public class WebViewActivity extends Activity {
                 return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle arrow click here
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // close this activity and return to preview activity (if there is any)
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

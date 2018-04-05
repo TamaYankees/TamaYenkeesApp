@@ -4,6 +4,13 @@
     android:layout_height="match_parent"
     tools:context="jp.ne.t_yankees.WebViewActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/webview_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="#cc233977"
+        android:elevation="4dp"
+        android:theme="@style/ToolbarTheme" />
     <WebView
         android:id="@+id/webView"
         android:layout_width="match_parent"
