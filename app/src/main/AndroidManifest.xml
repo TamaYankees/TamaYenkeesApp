@@ -22,7 +22,9 @@
             <!--android:name="com.google.firebase.messaging.default_notification_color"-->
             <!--android:resource="@color/colorAccent" />-->
         <!-- [END fcm_default_icon] -->
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:configChanges="orientation|screenSize">
+            <!--android:theme="@style/AppTheme">-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

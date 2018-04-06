@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -93,6 +95,10 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false); // タイトル文字を消す
+
+        //動的に背景画像を設定 (ここでは、activity_main.xmlで指定するので使用しない
+//        LinearLayout layout = (LinearLayout) findViewById(R.id.layout_main);
+//        layout.setBackgroundResource(R.drawable.ty_back);
 
         // ログをクリックした時にHPを表示するように設定
         ImageView iview = findViewById(R.id.ty_logo);
@@ -316,11 +322,29 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(i);
     }
-
+    private void setBackgroundImage(int res) {
+        LinearLayout layout = (LinearLayout) findViewById(R.id.layout_main);
+        layout.setBackgroundResource(res);
+    }
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putBoolean(FLAG_HAS_WEBVIEW, true);
         super.onSaveInstanceState(savedInstanceState);
+    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        // 画面の向きの変更に応じて背景画像を切り替える
+        switch (newConfig.orientation) {
+            case Configuration.ORIENTATION_PORTRAIT:  // 縦長
+                setBackgroundImage(R.drawable.ty_back);
+                break;
+            case Configuration.ORIENTATION_LANDSCAPE:  // 横長
+                setBackgroundImage(R.drawable.ty_back_h);
+                break;
+            default:
+                break;
+        }
+        super.onConfigurationChanged(newConfig);
     }
     @Override
     public void onDestroy() {
