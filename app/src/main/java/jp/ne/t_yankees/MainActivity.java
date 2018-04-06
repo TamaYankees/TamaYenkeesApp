@@ -272,9 +272,10 @@ public class MainActivity extends AppCompatActivity {
                         .setMessage("Version: " + BuildConfig.VERSION_NAME)
                         .setPositiveButton("OK", null)
                         .show();
+                return true;
             case R.id.appPage:
                 displayHomepage(APP_PAGE_SUB_URL);
-
+                return true;
             default:
                 Log.d(TAG, "Menu item selected");
                 return super.onOptionsItemSelected(item);
