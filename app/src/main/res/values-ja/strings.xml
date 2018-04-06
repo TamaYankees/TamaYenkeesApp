@@ -13,7 +13,7 @@
     <string name="pref_summary_notif_schedule">スケジュールの追加や変更のお知らせを受信する</string>
     <string name="pref_title_scorebook">スコアブック</string>
     <string name="pref_summary_notif_scorebook">スコアブックの追加や変更のお知らせを受信する</string>
-    <string name="setting_label">設定...</string>
-    <string name="version_info_label">バージョン情報...</string>
-
+    <string name="setting_label">設定</string>
+    <string name="app_page_label">アプリページ</string>
+    <string name="version_info_label">バージョン情報</string>
 </resources>

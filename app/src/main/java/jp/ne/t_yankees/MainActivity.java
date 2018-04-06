@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private final String WEBSB_CAL = URL_HP_ROOT + "websb3/s-calendar.cgi?";  //スケジュール一覧
     private final String WEBSB_SCORE = URL_HP_ROOT + "websb3/s-team.cgi?";  //勝敗結果
     private List<Map<String, String>> mdata = new ArrayList<Map<String, String>>();
+    private static final String APP_PAGE_SUB_URL = "app";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         iview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                displayHomepage();
+                displayHomepage(null);
             }
         });
         // メニューリスト
@@ -254,17 +255,20 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.menuSetting:
-                Log.d(TAG, "Setting menu selected");
+//                Log.d(TAG, "Setting menu selected");
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.versionInfo:
-                Log.d(TAG, "Version info selected");
+//                Log.d(TAG, "Version info selected");
                 AlertDialog builder = new AlertDialog.Builder(this)
                         .setTitle(R.string.app_name)
                         .setMessage("Version: " + BuildConfig.VERSION_NAME)
                         .setPositiveButton("OK", null)
                         .show();
+            case R.id.appPage:
+                displayHomepage(APP_PAGE_SUB_URL);
+
             default:
                 Log.d(TAG, "Menu item selected");
                 return super.onOptionsItemSelected(item);
@@ -303,8 +307,12 @@ public class MainActivity extends AppCompatActivity {
             Log.v(TAG,msg);
         }
     }
-    private void displayHomepage() {
-        Uri uri = Uri.parse("http://t-yankees.sakura.ne.jp/");
+    private void displayHomepage(String subPath) {
+        String surl = URL_HP_ROOT;
+        if (subPath != null) {
+            surl += subPath;
+        }
+        Uri uri = Uri.parse(surl);
         Intent i = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(i);
     }
