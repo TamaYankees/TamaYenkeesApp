@@ -16,4 +16,5 @@
     <string name="setting_label">設定</string>
     <string name="app_page_label">アプリページ</string>
     <string name="version_info_label">バージョン情報</string>
+    <string name="information">お知らせ</string>
 </resources>

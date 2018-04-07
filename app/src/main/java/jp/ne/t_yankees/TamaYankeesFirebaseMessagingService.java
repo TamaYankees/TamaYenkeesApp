@@ -1,22 +1,14 @@
 package jp.ne.t_yankees;
 
-import android.app.Notification;
-import android.app.Service;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import java.util.Map;
-//import com.firebase.jobdispatcher.Constraint;
-//import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-//import com.firebase.jobdispatcher.GooglePlayDriver;
-//import com.firebase.jobdispatcher.Job;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -36,58 +28,37 @@ public class TamaYankeesFirebaseMessagingService extends FirebaseMessagingServic
     // [START receive_message]
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        String from = remoteMessage.getFrom();
-        Map<String,String> data = remoteMessage.getData();
-        Log.d(TAG, "===== onMessageReceived =====");
-        Log.d(TAG, "from:" + from);
-        Log.d(TAG, "data:" + data.toString());
-        String msg = "メッセージが通知されました";
-        for (String key : data.keySet()) {
-            msg += key + " " + data.get(key).toString();
-            Log.d(TAG, "  " + key + "=" + data.get(key).toString());
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "===== onMessageReceived =====");
+            Log.d(TAG, "getCollapseKey() : " + remoteMessage.getCollapseKey());
+            Log.d(TAG, "getFrom() : " + remoteMessage.getFrom());
+            Log.d(TAG, "getMessageId() : " + remoteMessage.getMessageId());
+            Log.d(TAG, "getMessageType() : " + remoteMessage.getMessageType());
+            Log.d(TAG, "getNotification().getTitle() : " + remoteMessage.getNotification().getTitle());
+            Log.d(TAG, "getNotification().getBody() : " + remoteMessage.getNotification().getBody());
+            Log.d(TAG, "getNotification().getTag() : " + remoteMessage.getNotification().getTag());
+            Log.d(TAG, "getSentTime() : " + remoteMessage.getSentTime());
+            Log.d(TAG, "getTo() : " + remoteMessage.getTo());
+            Log.d(TAG, "getTtl()  : " + remoteMessage.getTtl());
+            Map<String, String> datad = remoteMessage.getData();
+            Log.d(TAG, "data:" + datad.toString());
         }
-
-//        sendNotification(msg);
-//        sendMessage(msg);
-
-//        // [START_EXCLUDE]
-//        // There are two types of messages data messages and notification messages. Data messages are handled
-//        // here in onMessageReceived whether the app is in the foreground or background. Data messages are the type
-//        // traditionally used with GCM. Notification messages are only received here in onMessageReceived when the app
-//        // is in the foreground. When the app is in the background an automatically generated notification is displayed.
-//        // When the user taps on the notification they are returned to the app. Messages containing both notification
-//        // and data payloads are treated as notification messages. The Firebase console always sends notification
-//        // messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
-//        // [END_EXCLUDE]
-//
-//        // TODO(developer): Handle FCM messages here.
-//        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-//        Log.d(TAG, "From: " + remoteMessage.getFrom());
-//
-//        // Check if message contains a data payload.
-//        if (remoteMessage.getData().size() > 0) {
-//            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-//
-//            if (/* Check if data needs to be processed by long running job */ true) {
-//                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
-//                scheduleJob();
-//            } else {
-//                // Handle message within 10 seconds
-//                handleNow();
-//            }
-//
-//        }
-//
-//        // Check if message contains a notification payload.
-//        if (remoteMessage.getNotification() != null) {
-//            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-//        }
-//
-//        // Also if you intend on generating your own notifications as a result of a received FCM
-//        // message, here is where that should be initiated. See sendNotification method below.
+        Map<String, String> data = remoteMessage.getData();
+        String url = null;
+        if (data.containsKey("url")) {
+            url = data.get("url").toString();
+        }
+        StringBuffer params = new StringBuffer();
+        if (data.containsKey("ymd")) {
+            params.append(data.get("ymd").toString());
+        }
+        sendMessage(remoteMessage.getNotification().getTitle(),
+                    remoteMessage.getNotification().getBody(),
+                    url,
+                    params.toString()
+                );
     }
-    // [END receive_message]
-
+// 参考) 時間がかかる場合は以下のように処理する
 //    /**
 //     * Schedule a job using FirebaseJobDispatcher.
 //     */
@@ -101,15 +72,8 @@ public class TamaYankeesFirebaseMessagingService extends FirebaseMessagingServic
 //        dispatcher.schedule(myJob);
 //        // [END dispatch_job]
 //    }
-//
-//    /**
-//     * Handle time allotted to BroadcastReceivers.
-//     */
-//    private void handleNow() {
-//        Log.d(TAG, "Short lived task is done.");
-//    }
 
-
+    //（未使用）ここから新たに通知を出す場合の処理
     /**
      * Create and show a simple notification containing the received FCM message.
      *
@@ -164,12 +128,16 @@ public class TamaYankeesFirebaseMessagingService extends FirebaseMessagingServic
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
-    protected void sendMessage(String msg){
-        Log.d(TAG, "----> sendMessage : " + msg);
-
+    protected void sendMessage(String title, String body, String url, String params){
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "----> sendMessage : " + title + ", " + body + ", " + url + ", " + params);
+        }
         Intent broadcast = new Intent();
-        broadcast.putExtra("message", msg);
-        broadcast.setAction("DO_ACTION");
+        broadcast.putExtra("title", title);
+        broadcast.putExtra("body", body);
+        broadcast.putExtra("url", url);
+        broadcast.putExtra("params", params);
+        broadcast.setAction("TY_NOTIFICATION_ACTION");
         getBaseContext().sendBroadcast(broadcast);
     }
 }

@@ -36,5 +36,6 @@
     <string name="setting_label">Settings</string>
     <string name="app_page_label">Application Page</string>
     <string name="version_info_label">Version</string>
+    <string name="information">Information</string>
 
 </resources>

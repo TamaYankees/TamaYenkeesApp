@@ -3,7 +3,10 @@ package jp.ne.t_yankees;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.preference.PreferenceManager;
@@ -42,23 +45,19 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_URL = "jp.ne.t_yankees.URL";
     public static final String EXTRA_POST_DATA = "jp.ne.t_yankees.POST_DATA";
 
-    private boolean debug = false;
-//    private WebView webview;
-//    private WebView webview_back;
     private ListView listView;
     private final String URL_HP_ROOT = "http://t-yankees.sakura.ne.jp/";
     private final String WEBSB_CAL = URL_HP_ROOT + "websb3/s-calendar.cgi?";  //スケジュール一覧
     private final String WEBSB_SCORE = URL_HP_ROOT + "websb3/s-team.cgi?";  //勝敗結果
     private List<Map<String, String>> mdata = new ArrayList<Map<String, String>>();
     private static final String APP_PAGE_SUB_URL = "app";
+    private UpdateReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        debug = isDebug();
         initMainView();
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
             String channelId = getString(R.string.default_notification_channel_id);
@@ -72,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         //Push通知の購読開始
         setReceiveNotificationSettings();
 
-        if (debug) {
+        if (BuildConfig.DEBUG) {
             Log.d(TAG, "--- Extras ---");
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
@@ -164,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, WebViewActivity.class);
         boolean hasCredential = false;
         if (webview_launch_mode.equals("post")) {
+            // 1)
             String postData = null;
             if (mid != null && mpass != null) {
                 postData = "mid=" + mid + "&mpass=" + mpass;
@@ -181,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(EXTRA_POST_DATA, postData);
 
         } else if (webview_launch_mode.equals("html_data")) {
+            //2)
             // 目的のページをロードするHTMLを作成し、WebView# loadData() に渡す
             // 参考）https://stackoverflow.com/questions/39506246/how-to-post-data-for-webview-android
             StringBuffer formData = new StringBuffer();
@@ -258,6 +259,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         FirebaseMessaging.getInstance().subscribeToTopic(NOTIFICATION_TOPIC_APP);
+
+        this.receiver = new UpdateReceiver();
+        IntentFilter ifilter = new IntentFilter();
+        ifilter.addAction("TY_NOTIFICATION_ACTION");
+        registerReceiver(receiver, ifilter);
     }
 
     @Override
@@ -266,10 +272,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        return super.onKeyDown(keyCode, event);
-//    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -277,12 +280,10 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.menuSetting:
-//                Log.d(TAG, "Setting menu selected");
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.versionInfo:
-//                Log.d(TAG, "Version info selected");
                 AlertDialog builder = new AlertDialog.Builder(this)
                         .setTitle(R.string.app_name)
                         .setMessage("Version: " + BuildConfig.VERSION_NAME)
@@ -293,7 +294,6 @@ public class MainActivity extends AppCompatActivity {
                 displayHomepage(APP_PAGE_SUB_URL);
                 return true;
             default:
-                Log.d(TAG, "Menu item selected");
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -311,13 +311,12 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = pref.edit();
             editor.putBoolean(key, defaultValue);
             editor.apply();
-            Log.d(TAG, "Initialyzed preference: " + key + "-->" + defaultValue);
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "Initialyzed preference: " + key + "-->" + defaultValue);
+            }
         }
     }
-    private boolean isDebug() {
-        Log.d(TAG, "isDebug :" + BuildConfig.DEBUG);
-        return BuildConfig.DEBUG;
-    }
+
     private void debugReadAllPreferences(){
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         Map<String,?> map = pref.getAll();
@@ -325,7 +324,6 @@ public class MainActivity extends AppCompatActivity {
         for(Map.Entry<String, ?> entry : map.entrySet()){
             String key=entry.getKey();
             Object value = entry.getValue();
-
             String msg=String.format("%s=%s", key,value);
             Log.v(TAG,msg);
         }
@@ -365,28 +363,28 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onDestroy() {
-//        unregisterReceiver(receiver);
+        unregisterReceiver(receiver);
         super.onDestroy();
     }
-//    @Override
-//    public void onStop(){
-//        super.onStop();
-//    }
-//    @Override
-//    public void onPause(){
-//        super.onPause();
-//    }
 
-//    protected class UpdateReceiver extends BroadcastReceiver {
-//        @Override
-//        public void onReceive(Context context, Intent intent){
-//            Log.d("UpdateReceiver", "----> onReceive");
-//
-//            Bundle extras = intent.getExtras();
-//            String msg = extras.getString("message");
-//            TextView textView = findViewById(R.id.text_view);
-//            textView.setText(msg);
-//            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-//        }
-//    }
+    protected class UpdateReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent){
+            if (BuildConfig.DEBUG) {
+                Log.d("UpdateReceiver", "----> onReceive");
+            }
+
+            Bundle extras = intent.getExtras();
+            String title = extras.getString("title");
+            String body = extras.getString("body");
+            String message = title + "\n" + body;
+//            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+            AlertDialog builder = new AlertDialog.Builder(context)
+                                     .setTitle(R.string.information)
+                                     .setIcon(R.mipmap.ty_logo)
+                                     .setMessage(message)
+                                     .setPositiveButton("OK", null)
+                                     .show();
+        }
+    }
 }
