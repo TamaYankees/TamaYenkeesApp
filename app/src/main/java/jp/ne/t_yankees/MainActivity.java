@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String NOTIFICATION_TOPIC_SCOREBOOK = "scorebook";
     public static final String NOTIFICATION_TOPIC_SCOREBOOK_TEST = "scorebook_test";
     public static final String NOTIFICATION_TOPIC_APP = "app";
+    public static final String NOTIFICATION_TOPIC_APP_TEST = "app_test";
     private static final String TAG = "TY-MainActivity";
     private static final String FLAG_HAS_WEBVIEW = "has_view";
     public static final String EXTRA_WEB_DATA = "jp.ne.t_yankees.WEB_DATA";
@@ -234,6 +235,11 @@ public class MainActivity extends AppCompatActivity {
     private void setReceiveNotificationSettings() {
         initialyzePreference(SettingsActivity.KEY_PREF_SCHEDULE, true);
         initialyzePreference(SettingsActivity.KEY_PREF_SCOREBOOK, true);
+        //念のためテスト系のトピックをUnsubscribeする
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_SCHEDULE_TEST);
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_SCOREBOOK_TEST);
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_APP_TEST);
+        //schedule
         if (getPreferenceBoolean(SettingsActivity.KEY_PREF_SCHEDULE)) {
             FirebaseMessaging.getInstance().subscribeToTopic(NOTIFICATION_TOPIC_SCHEDULE);
             if (BuildConfig.DEBUG) {
@@ -246,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_SCHEDULE_TEST);
             }
         }
+        // scorebook
         if (getPreferenceBoolean(SettingsActivity.KEY_PREF_SCOREBOOK)) {
             FirebaseMessaging.getInstance().subscribeToTopic(NOTIFICATION_TOPIC_SCOREBOOK);
             if (BuildConfig.DEBUG) {
@@ -259,7 +266,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         FirebaseMessaging.getInstance().subscribeToTopic(NOTIFICATION_TOPIC_APP);
-
+        if (BuildConfig.DEBUG) {
+            FirebaseMessaging.getInstance().subscribeToTopic(NOTIFICATION_TOPIC_APP_TEST);
+        }
         this.receiver = new UpdateReceiver();
         IntentFilter ifilter = new IntentFilter();
         ifilter.addAction("TY_NOTIFICATION_ACTION");
