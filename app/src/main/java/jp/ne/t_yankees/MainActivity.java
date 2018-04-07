@@ -32,7 +32,9 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     public static final String NOTIFICATION_TOPIC_SCHEDULE = "schedule";
+    public static final String NOTIFICATION_TOPIC_SCHEDULE_TEST = "schedule_test";
     public static final String NOTIFICATION_TOPIC_SCOREBOOK = "scorebook";
+    public static final String NOTIFICATION_TOPIC_SCOREBOOK_TEST = "scorebook_test";
     public static final String NOTIFICATION_TOPIC_APP = "app";
     private static final String TAG = "TY-MainActivity";
     private static final String FLAG_HAS_WEBVIEW = "has_view";
@@ -233,13 +235,27 @@ public class MainActivity extends AppCompatActivity {
         initialyzePreference(SettingsActivity.KEY_PREF_SCOREBOOK, true);
         if (getPreferenceBoolean(SettingsActivity.KEY_PREF_SCHEDULE)) {
             FirebaseMessaging.getInstance().subscribeToTopic(NOTIFICATION_TOPIC_SCHEDULE);
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "subscribe schedule_test");
+                FirebaseMessaging.getInstance().subscribeToTopic(NOTIFICATION_TOPIC_SCHEDULE_TEST);
+            }
         } else {
             FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_SCHEDULE);
+            if (BuildConfig.DEBUG) {
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_SCHEDULE_TEST);
+            }
         }
         if (getPreferenceBoolean(SettingsActivity.KEY_PREF_SCOREBOOK)) {
             FirebaseMessaging.getInstance().subscribeToTopic(NOTIFICATION_TOPIC_SCOREBOOK);
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "subscribe scorebook_test");
+                FirebaseMessaging.getInstance().subscribeToTopic(NOTIFICATION_TOPIC_SCOREBOOK_TEST);
+            }
         } else {
             FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_SCOREBOOK);
+            if (BuildConfig.DEBUG) {
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_SCOREBOOK_TEST);
+            }
         }
         FirebaseMessaging.getInstance().subscribeToTopic(NOTIFICATION_TOPIC_APP);
     }
