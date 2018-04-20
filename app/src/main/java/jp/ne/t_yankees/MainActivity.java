@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 String url = mdata.get(position).get("url");
                 String menu = mdata.get(position).get("title");
                 String params = null;
-                if (menu.equals("スケジュール")) {
+                if (menu.equals( getString(R.string.pref_title_schedule))) {
                     //スケジュール画面を開く場合は、以下のパラメータを付加する
                     //このパラメーターを指定しないと過去の予定も表示されてしまう
                     params = "scsugisw=1";
@@ -143,9 +143,9 @@ public class MainActivity extends AppCompatActivity {
     private void initMenuData() {
         mdata.add(new HashMap<String, String>());
         mdata.add(new HashMap<String, String>());
-        mdata.get(0).put("title", "スケジュール");
+        mdata.get(0).put("title", getString(R.string.pref_title_schedule));
         mdata.get(0).put("url", WEBSB_CAL);
-        mdata.get(1).put("title", "スコアブック");
+        mdata.get(1).put("title", getString(R.string.pref_title_scorebook));
         mdata.get(1).put("url", WEBSB_SCORE);
     }
     private String getMenuTitle(int index) {
