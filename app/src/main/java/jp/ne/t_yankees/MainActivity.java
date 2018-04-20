@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_URL = "jp.ne.t_yankees.URL";
     public static final String EXTRA_POST_DATA = "jp.ne.t_yankees.POST_DATA";
 
-    private ListView listView;
     private final String URL_HP_ROOT = "http://t-yankees.sakura.ne.jp/";
     private final String WEBSB_CAL = URL_HP_ROOT + "websb3/s-calendar.cgi?";  //スケジュール一覧
     private final String WEBSB_SCORE = URL_HP_ROOT + "websb3/s-team.cgi?";  //勝敗結果
@@ -121,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
             menu.add(getMenuTitle(i));
         }
         ArrayAdapter menuAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, menu);
-        listView = (ListView)findViewById(R.id.menuListview);
+        ListView listView = (ListView)findViewById(R.id.menuListview);
         listView.setAdapter(menuAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -185,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 postData = "mid=&mpass=";
             }
-//            String params = getIntent().getStringExtra("params");
             if (params != null) {
                 postData += "&" + params;
             }
