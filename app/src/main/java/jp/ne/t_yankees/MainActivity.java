@@ -88,8 +88,9 @@ public class MainActivity extends AppCompatActivity {
         // その際、extraの中の paramsをPOSTデータとして設定する
         final String redirectURL = getIntent().getStringExtra("url");
         if (redirectURL != null) {
+            String params = getIntent().getStringExtra("params");
             Log.d(TAG, "URL received from extra data: " + redirectURL);
-            openWebPage(redirectURL, "ユーザIDとパスワードを設定しておくと通知されたスケジュールのページが開くようになります");
+            openWebPage(redirectURL, params, "ユーザIDとパスワードを設定しておくと通知されたスケジュールのページが開くようになります");
         }
     }
     private void initMainView() {
@@ -125,14 +126,20 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String menu = mdata.get(position).get("title");
                 String url = mdata.get(position).get("url");
-                openWebPage(url, "ユーザIDとパスワードを設定しておくと、認証された状態でページが開きます");
+                String menu = mdata.get(position).get("title");
+                String params = null;
+                if (menu.equals("スケジュール")) {
+                    //スケジュール画面を開く場合は、以下のパラメータを付加する
+                    //このパラメーターを指定しないと過去の予定も表示されてしまう
+                    params = "scsugisw=1";
+                }
+                openWebPage(url, params, "ユーザIDとパスワードを設定しておくと、認証された状態でページが開きます");
             }
         });
 
     }
-
+    // メインメニューを作成
     private void initMenuData() {
         mdata.add(new HashMap<String, String>());
         mdata.add(new HashMap<String, String>());
@@ -147,7 +154,11 @@ public class MainActivity extends AppCompatActivity {
         }
         return mdata.get(index).get("title");
     }
-    private void openWebPage(final String url, String messageWhenNoCredential) {
+    // 指定されたwebページを開く
+    // FCMからの通知に指定されたページを開く場合と、アプリのメインメニューで指定されたページを開く場合の２つのケースを想定
+    // 前者の場合は、このActivityを呼び出したIntentの中に、paramsというキーの値が設定されている場合があるので
+    // その場合POSTデータにセットする
+    private void openWebPage(final String url, final String params, String messageWhenNoCredential) {
         String mid = getPreferenceString(SettingsActivity.KEY_PREF_ID);
         String mpass = getPreferenceString(SettingsActivity.KEY_PREF_PASS);
 
@@ -174,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 postData = "mid=&mpass=";
             }
-            String params = getIntent().getStringExtra("params");
+//            String params = getIntent().getStringExtra("params");
             if (params != null) {
                 postData += "&" + params;
             }
