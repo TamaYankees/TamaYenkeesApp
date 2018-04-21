@@ -28,7 +28,9 @@ import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,12 +129,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String url = mdata.get(position).get("url");
                 String menu = mdata.get(position).get("title");
-                String params = null;
-                if (menu.equals( getString(R.string.pref_title_schedule))) {
-                    //スケジュール画面を開く場合は、以下のパラメータを付加する
-                    //このパラメーターを指定しないと過去の予定も表示されてしまう
-                    params = "scsugisw=1";
-                }
+                String params = getWebPageParameter(menu);
                 openWebPage(url, params, "ユーザIDとパスワードを設定しておくと、認証された状態でページが開きます");
             }
         });
@@ -240,7 +237,23 @@ public class MainActivity extends AppCompatActivity {
         }
         startActivity(intent);
     }
-
+    /**
+    各Webページ用のパラメータを取得する
+    - スケジュール ()
+     */
+    private String getWebPageParameter(String menu) {
+        String params = "";
+        if (menu.equals( getString(R.string.pref_title_schedule))) {
+            //スケジュール画面を開く場合は、以下のパラメーターを指定しないと過去の予定も表示されてしまう。
+            params = "scsugisw=1";
+        } else if (menu.equals(getString(R.string.pref_title_scorebook))) {
+            //対戦成績の画面は今年度の成績を開く。このパラメータを指定しないと通算成績が表示される。
+            Date today = new Date();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy");
+            params = "mode_nendo=" + df.format(today);
+        }
+        return params;
+    }
     private void setReceiveNotificationSettings() {
         initialyzePreference(SettingsActivity.KEY_PREF_SCHEDULE, true);
         initialyzePreference(SettingsActivity.KEY_PREF_SCOREBOOK, true);
