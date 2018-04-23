@@ -24,10 +24,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private final String WEBSB_SCORE = URL_HP_ROOT + "websb3/s-team.cgi?";  //勝敗結果
     private List<Map<String, String>> mdata = new ArrayList<Map<String, String>>();
     private static final String APP_PAGE_SUB_URL = "app";
+    private final String URL_APP_VER = URL_HP_ROOT + APP_PAGE_SUB_URL + "/current_version"; //最新のアプリバージョンを取得するURL
     private UpdateReceiver receiver;
 
     @Override
@@ -93,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "URL received from extra data: " + redirectURL);
             openWebPage(redirectURL, params, "ユーザIDとパスワードを設定しておくと通知されたスケジュールのページが開くようになります");
         }
+        checkVersion(URL_APP_VER);
     }
     private void initMainView() {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -133,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
                 openWebPage(url, params, "ユーザIDとパスワードを設定しておくと、認証された状態でページが開きます");
             }
         });
-
     }
     // メインメニューを作成
     private void initMenuData() {
@@ -149,6 +157,39 @@ public class MainActivity extends AppCompatActivity {
             initMenuData();
         }
         return mdata.get(index).get("title");
+    }
+
+    private void displayMessage(final String message) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                TextView tview = (TextView) findViewById(R.id.messateTextview);
+                tview.setText(message);
+                tview.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+    private void displayNewAppVersionMessage(final String newVer) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                TextView tview = (TextView) findViewById(R.id.messateTextview);
+                // タップされた時のOnClickListenerに openAppPageListenerを指定して、アプリページを開くようにする
+                tview.setOnClickListener(new openAppPageListener());
+                tview.setText(getString(R.string.new_app_version_message) + ": " + newVer);
+                tview.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+    private void clearMessage() {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                TextView tview =  (TextView) findViewById(R.id.messateTextview);
+                tview.setText("");
+                tview.setVisibility(View.INVISIBLE);
+            }
+        });
     }
     // 指定されたwebページを開く
     // FCMからの通知に指定されたページを開く場合と、アプリのメインメニューで指定されたページを開く場合の２つのケースを想定
@@ -416,6 +457,52 @@ public class MainActivity extends AppCompatActivity {
                                      .setMessage(message)
                                      .setPositiveButton("OK", null)
                                      .show();
+        }
+    }
+    private String getCurrentVersion() {
+        return BuildConfig.VERSION_NAME;
+    }
+
+    private void checkVersion(final String appVerUrl) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(appVerUrl);
+                    HttpURLConnection con = (HttpURLConnection)url.openConnection();
+                    String latestVersion = InputStreamToString(con.getInputStream());
+                    String currentVersion = getCurrentVersion();
+                    if (BuildConfig.DEBUG) {
+                        Log.d(TAG, "[Version] latest:" + latestVersion + ", current:" + currentVersion);
+                    }
+                    if (Float.parseFloat(latestVersion) > Float.parseFloat(currentVersion)) {
+                        // ここ(UIスレッド外)で getString()を行うと、"Only the original thread that created a view hierarchy can touch its views." のエラーが出るので
+                        // getString()を内部のUIスレッドで行う displayNewAppVersionMessage()を作成して呼び出す
+                        displayNewAppVersionMessage(latestVersion);
+                    }
+                } catch(Exception ex) {
+                    Log.e(TAG, ex.getClass().getName() + ":" + ex.getMessage());
+                }
+            }
+        }).start();
+    }
+
+    // InputStream -> String
+    static String InputStreamToString(InputStream is) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+            sb.append(line);
+        }
+        br.close();
+        return sb.toString();
+    }
+    class openAppPageListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            displayHomepage(APP_PAGE_SUB_URL);
+            clearMessage();
         }
     }
 }

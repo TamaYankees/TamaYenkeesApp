@@ -25,5 +25,6 @@
     <string name="app_page_label">Application Page</string>
     <string name="version_info_label">Version</string>
     <string name="information">Information</string>
+    <string name="new_app_version_message">App has been updated</string>
 
 </resources>

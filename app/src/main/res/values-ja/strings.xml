@@ -17,4 +17,5 @@
     <string name="app_page_label">アプリページ</string>
     <string name="version_info_label">バージョン情報</string>
     <string name="information">お知らせ</string>
+    <string name="new_app_version_message">アプリがアップデートされています</string>
 </resources>
