@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         if (redirectURL != null) {
             String params = getIntent().getStringExtra("params");
             Log.d(TAG, "URL received from extra data: " + redirectURL);
-            openWebPage(redirectURL, params, "ユーザIDとパスワードを設定しておくと通知されたスケジュールのページが開くようになります");
+            openWebPage(redirectURL, params, getString(R.string.id_pass_setting_message));
         }
         checkVersion(URL_APP_VER);
     }
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 String url = mdata.get(position).get("url");
                 String menu = mdata.get(position).get("title");
                 String params = getWebPageParameter(menu);
-                openWebPage(url, params, "ユーザIDとパスワードを設定しておくと、認証された状態でページが開きます");
+                openWebPage(url, params, getString(R.string.id_pass_setting_message2));
             }
         });
     }
@@ -206,27 +206,29 @@ public class MainActivity extends AppCompatActivity {
          * 2) WebView#loadData()で表示するために、HTML（ロードと同時にHPに遷移する）データをIntentのExtra
          *    に埋め込む
          */
-        String webview_launch_mode = "post";
-//        String webview_launch_mode = "html_data";
+        String webview_launch_mode = "post";    // ==> 1)
+//        String webview_launch_mode = "html_data";  // ==> 2)
 
         Intent intent = new Intent(this, WebViewActivity.class);
         boolean hasCredential = false;
         if (webview_launch_mode.equals("post")) {
             // 1)
             String postData = null;
-            if (mid != null && mpass != null) {
+            if (mid != null && mpass != null &&
+                mid.length() > 0 && mpass.length() > 0) {
                 postData = "mid=" + mid + "&mpass=" + mpass;
-                if (mid.length() > 0 && mpass.length() > 0) {
-                    hasCredential = true;
-                }
-            } else {
-                postData = "mid=&mpass=";
+                hasCredential = true;
             }
             if (params != null) {
-                postData += "&" + params;
+                if (postData != null) {
+                    postData += "&";
+                }
+                postData += params;
             }
             intent.putExtra(EXTRA_URL, url);
-            intent.putExtra(EXTRA_POST_DATA, postData);
+            if (postData != null) {
+                intent.putExtra(EXTRA_POST_DATA, postData);
+            }
 
         } else if (webview_launch_mode.equals("html_data")) {
             //2)
@@ -273,7 +275,6 @@ public class MainActivity extends AppCompatActivity {
         }
         // 認証情報が未設定（あるいは不十分）で、かつその際に表示するメッセージが指定されている場合はポップアップで表示する
         if (!hasCredential && messageWhenNoCredential != null) {
-            Log.d(TAG, "message=" + messageWhenNoCredential);
             Toast.makeText(this, messageWhenNoCredential, Toast.LENGTH_LONG).show();
         }
         startActivity(intent);

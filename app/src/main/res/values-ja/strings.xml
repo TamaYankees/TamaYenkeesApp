@@ -18,4 +18,7 @@
     <string name="version_info_label">バージョン情報</string>
     <string name="information">お知らせ</string>
     <string name="new_app_version_message">アプリがアップデートされています</string>
+    <string name="id_pass_setting_message">ユーザIDとパスワードを設定しておくと通知されたスケジュールのページが開くようになります</string>
+    <string name="id_pass_setting_message2">ユーザIDとパスワードを設定しておくと、認証された状態でページが開きます</string>
+
 </resources>
