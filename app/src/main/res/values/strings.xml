@@ -28,5 +28,6 @@
     <string name="new_app_version_message">App has been updated</string>
     <string name="id_pass_setting_message">The notified page will be open if you set user ID and password at setting.</string>
     <string name="id_pass_setting_message2">Page will open with authentified status if you set user ID and password at setting.</string>
+    <string name="pref_title_personal_record">Personal Record</string>
 
 </resources>

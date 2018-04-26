@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private final String URL_HP_ROOT = "http://t-yankees.sakura.ne.jp/";
     private final String WEBSB_CAL = URL_HP_ROOT + "websb3/s-calendar.cgi?";  //スケジュール一覧
     private final String WEBSB_SCORE = URL_HP_ROOT + "websb3/s-team.cgi?";  //勝敗結果
+    private final String WEBSB_PERSONAL_RECORD = URL_HP_ROOT + "websb3/s-kojin.cgi?";  //個人成績
     private List<Map<String, String>> mdata = new ArrayList<Map<String, String>>();
     private static final String APP_PAGE_SUB_URL = "app";
     private final String URL_APP_VER = URL_HP_ROOT + APP_PAGE_SUB_URL + "/current_version"; //最新のアプリバージョンを取得するURL
@@ -147,10 +148,13 @@ public class MainActivity extends AppCompatActivity {
     private void initMenuData() {
         mdata.add(new HashMap<String, String>());
         mdata.add(new HashMap<String, String>());
+        mdata.add(new HashMap<String, String>());
         mdata.get(0).put("title", getString(R.string.pref_title_schedule));
         mdata.get(0).put("url", WEBSB_CAL);
         mdata.get(1).put("title", getString(R.string.pref_title_scorebook));
         mdata.get(1).put("url", WEBSB_SCORE);
+        mdata.get(2).put("title", getString(R.string.pref_title_personal_record));
+        mdata.get(2).put("url", WEBSB_PERSONAL_RECORD);
     }
     private String getMenuTitle(int index) {
         if (mdata.size() == 0) {
@@ -288,8 +292,9 @@ public class MainActivity extends AppCompatActivity {
         if (menu.equals( getString(R.string.pref_title_schedule))) {
             //スケジュール画面を開く場合は、以下のパラメーターを指定しないと過去の予定も表示されてしまう。
             params = "scsugisw=1";
-        } else if (menu.equals(getString(R.string.pref_title_scorebook))) {
-            //対戦成績の画面は今年度の成績を開く。このパラメータを指定しないと通算成績が表示される。
+        } else if (menu.equals(getString(R.string.pref_title_scorebook)) ||
+                   menu.equals( getString(R.string.pref_title_personal_record)) ) {
+            //対戦成績及び個人成績の画面は今年度の成績を開く。このパラメータを指定しないと通算成績が表示される。
             Date today = new Date();
             SimpleDateFormat df = new SimpleDateFormat("yyyy");
             params = "mode_nendo=" + df.format(today);
