@@ -32,4 +32,16 @@
             android:summary="@string/pref_summary_notif_scorebook"
             android:defaultValue="true" />
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_title_ui"
+        android:key="pref_settings3">
+        <ListPreference
+            android:key="pref_background"
+            android:title="@string/pref_title_background"
+            android:dialogTitle="@string/pref_title_background"
+            android:entries="@array/pref_background_entries"
+            android:entryValues="@array/pref_background_values"
+            android:summary="%s"
+            android:defaultValue="@string/pref_background_default" />
+    </PreferenceCategory>
 </PreferenceScreen>

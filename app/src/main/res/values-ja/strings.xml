@@ -21,5 +21,7 @@
     <string name="id_pass_setting_message">ユーザIDとパスワードを設定しておくと通知されたスケジュールのページが開くようになります</string>
     <string name="id_pass_setting_message2">ユーザIDとパスワードを設定しておくと、認証された状態でページが開きます</string>
     <string name="pref_title_personal_record">個人成績</string>
+    <string name="pref_title_ui">ユーザーインターフェース</string>
+    <string name="pref_title_background">背景</string>
 
 </resources>

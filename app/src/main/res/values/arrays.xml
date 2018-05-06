@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_background_entries">
+        <item>Yankees</item>
+        <item>TY Uniform</item>
+        <item>Wakabayashi</item>
+    </string-array>
+    <string-array name="pref_background_values">
+        <item>ty_back</item>
+        <item>ty_back2</item>
+        <item>wakabayashi</item>
+    </string-array>
+</resources>

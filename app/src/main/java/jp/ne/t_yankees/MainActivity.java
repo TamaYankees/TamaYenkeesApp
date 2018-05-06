@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_WEB_DATA = "jp.ne.t_yankees.WEB_DATA";
     public static final String EXTRA_URL = "jp.ne.t_yankees.URL";
     public static final String EXTRA_POST_DATA = "jp.ne.t_yankees.POST_DATA";
+    private static final int REQUEST_CODE_SETTING = 1;
 
     private final String URL_HP_ROOT = "http://t-yankees.sakura.ne.jp/";
     private final String WEBSB_CAL = URL_HP_ROOT + "websb3/s-calendar.cgi?";  //スケジュール一覧
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String APP_PAGE_SUB_URL = "app";
     private final String URL_APP_VER = URL_HP_ROOT + APP_PAGE_SUB_URL + "/current_version"; //最新のアプリバージョンを取得するURL
     private UpdateReceiver receiver;
+    private Map<String, Map<Integer, Integer>> bgImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,9 +112,8 @@ public class MainActivity extends AppCompatActivity {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false); // タイトル文字を消す
 
-        //動的に背景画像を設定 (ここでは、activity_main.xmlで指定するので使用しない
-//        LinearLayout layout = (LinearLayout) findViewById(R.id.layout_main);
-//        layout.setBackgroundResource(R.drawable.ty_back);
+        //動的に背景画像を設定
+        setBackgroundImage();
 
         // ログをクリックした時にHPを表示するように設定
         ImageView iview = findViewById(R.id.ty_logo);
@@ -358,8 +359,9 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.menuSetting:
+                // 設定画面を開く、startActivityForResult()で開き、onActivityResult()で更新内容を受け取る
                 Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_SETTING);
                 return true;
             case R.id.versionInfo:
                 AlertDialog builder = new AlertDialog.Builder(this)
@@ -415,10 +417,47 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(i);
     }
-    private void setBackgroundImage(int res) {
-        LinearLayout layout = (LinearLayout) findViewById(R.id.layout_main);
-        layout.setBackgroundResource(res);
+    private void setBackgroundImage() {
+        Configuration config = getResources().getConfiguration();
+        setBackgroundImage(config.orientation);
     }
+    private void setBackgroundImage(int orientation) {
+        String background = getPreferenceString(SettingsActivity.KEY_PREF_BACKGROUND);
+        int bgImageId = getBackgroundImageId(background, orientation);
+        if (bgImageId != -1) {
+            LinearLayout layout = (LinearLayout) findViewById(R.id.layout_main);
+            layout.setBackgroundResource(bgImageId);
+        }
+    }
+    /**
+     * 背景画像のリソースIDを返す.
+     *
+     * 新しい背景画像を追加した時はこの中で初期化しているbgImagesに登録する
+     *
+     * @param background 背景画像のキー
+     * @param orientation 方向
+     * @return 背景画像のリソースI
+     */
+    private int getBackgroundImageId(String background, int orientation) {
+        if (bgImages == null) {
+            bgImages = new HashMap<String, Map<Integer, Integer>>();
+            bgImages.put("ty_back", new HashMap<Integer, Integer>());
+            bgImages.get("ty_back").put(Configuration.ORIENTATION_PORTRAIT, R.drawable.ty_back);
+            bgImages.get("ty_back").put(Configuration.ORIENTATION_LANDSCAPE, R.drawable.ty_back_h);
+            bgImages.put("ty_back2", new HashMap<Integer, Integer>());
+            bgImages.get("ty_back2").put(Configuration.ORIENTATION_PORTRAIT, R.drawable.ty_back2);
+            bgImages.get("ty_back2").put(Configuration.ORIENTATION_LANDSCAPE, R.drawable.ty_back2_h);
+            bgImages.put("wakabayashi", new HashMap<Integer, Integer>());
+            bgImages.get("wakabayashi").put(Configuration.ORIENTATION_PORTRAIT, R.drawable.wakabayashi);
+            bgImages.get("wakabayashi").put(Configuration.ORIENTATION_LANDSCAPE, R.drawable.wakabayashi_h);
+        }
+        if (! bgImages.containsKey(background) || ! bgImages.get(background).containsKey(orientation)) {
+            Log.e(TAG, "Cannot detect background image : " + background + ", " + orientation);
+            return -1;
+        }
+        return bgImages.get(background).get(orientation);
+    }
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putBoolean(FLAG_HAS_WEBVIEW, true);
@@ -426,18 +465,30 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        // 画面の向きの変更に応じて背景画像を切り替える
-        switch (newConfig.orientation) {
-            case Configuration.ORIENTATION_PORTRAIT:  // 縦長
-                setBackgroundImage(R.drawable.ty_back);
-                break;
-            case Configuration.ORIENTATION_LANDSCAPE:  // 横長
-                setBackgroundImage(R.drawable.ty_back_h);
-                break;
-            default:
-                break;
-        }
+        setBackgroundImage(newConfig.orientation);
         super.onConfigurationChanged(newConfig);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == REQUEST_CODE_SETTING && resultCode == RESULT_OK) {
+            Bundle bundle = intent.getExtras();
+            //Log.d(TAG, "onActivityResult requestCode: " + requestCode + ", resultCode: " + resultCode + ", bundle:" + bundle.toString());
+
+            //TODO: 購読の設定は呼び出し元(SettingsActivity#onSharedPreferenceChanged)で行っているのでここでは何もしないが、このAcvitityで一括してやるようにした方が良さそう
+//            if (bundle.containsKey(SettingsActivity.KEY_PREF_SCHEDULE)) {
+//                Log.d(TAG, "    KEY_PREF_SCHEDULE: " + bundle.getBoolean(SettingsActivity.KEY_PREF_SCHEDULE));
+//            }
+//            if (bundle.containsKey(SettingsActivity.KEY_PREF_SCOREBOOK)) {
+//                Log.d(TAG, "    KEY_PREF_SCOREBOOK: " + bundle.getBoolean(SettingsActivity.KEY_PREF_SCOREBOOK));
+//            }
+            if (bundle.containsKey(SettingsActivity.KEY_PREF_BACKGROUND)) {
+                //※ Bundleに設定で指定された値（画像名）が登録されているが、setBackgroundImage()内でPreferencesから
+                //  設定値を取得して背景画像に設定するので必要がない
+                //String background = bundle.getString(SettingsActivity.KEY_PREF_BACKGROUND);
+                setBackgroundImage();
+            }
+        }
     }
     @Override
     public void onDestroy() {
