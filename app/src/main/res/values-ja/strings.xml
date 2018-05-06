@@ -15,6 +15,7 @@
     <string name="pref_summary_notif_scorebook">スコアブックの追加や変更のお知らせを受信する</string>
     <string name="setting_label">設定</string>
     <string name="app_page_label">アプリページ</string>
+    <string name="app_manual_label">マニュアル</string>
     <string name="version_info_label">バージョン情報</string>
     <string name="information">お知らせ</string>
     <string name="new_app_version_message">アプリがアップデートされています</string>

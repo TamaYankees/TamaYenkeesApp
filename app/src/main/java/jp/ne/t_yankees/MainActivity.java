@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private final String WEBSB_PERSONAL_RECORD = URL_HP_ROOT + "websb3/s-kojin.cgi?";  //個人成績
     private List<Map<String, String>> mdata = new ArrayList<Map<String, String>>();
     private static final String APP_PAGE_SUB_URL = "app";
+    private static final String APP_MANUAL_SUB_URL = "app/manual";
     private final String URL_APP_VER = URL_HP_ROOT + APP_PAGE_SUB_URL + "/current_version"; //最新のアプリバージョンを取得するURL
     private UpdateReceiver receiver;
     private Map<String, Map<Integer, Integer>> bgImages;
@@ -372,6 +373,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.appPage:
                 displayHomepage(APP_PAGE_SUB_URL);
+                return true;
+            case R.id.appManual:
+                displayHomepage(APP_MANUAL_SUB_URL);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

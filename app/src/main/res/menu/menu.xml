@@ -7,6 +7,9 @@
         android:id="@+id/appPage"
         android:title="@string/app_page_label" />
     <item
+        android:id="@+id/appManual"
+        android:title="@string/app_manual_label" />
+    <item
         android:id="@+id/versionInfo"
         android:title="@string/version_info_label" />
     <!--<item-->
