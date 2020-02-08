@@ -20,6 +20,7 @@ public class SettingsActivity extends Activity
     public static final String KEY_PREF_ID = "pref_key_id";
     public static final String KEY_PREF_PASS = "pref_key_pass";
     public static final String KEY_PREF_SCHEDULE = "pref_key_schedule";
+    public static final String KEY_PREF_BOARD = "pref_key_board";
     public static final String KEY_PREF_SCOREBOOK = "pref_key_scorebook";
     public static final String KEY_PREF_BACKGROUND = "pref_background";
     private static final String TAG = "SettingsActivity";
@@ -48,6 +49,13 @@ public class SettingsActivity extends Activity
                 FirebaseMessaging.getInstance().subscribeToTopic(MainActivity.NOTIFICATION_TOPIC_SCHEDULE);
             } else {
                 FirebaseMessaging.getInstance().unsubscribeFromTopic(MainActivity.NOTIFICATION_TOPIC_SCHEDULE);
+            }
+        } else if (key.equals(KEY_PREF_BOARD)) {
+            bundle.putBoolean(KEY_PREF_BOARD, sharedPreferences.getBoolean(KEY_PREF_BOARD, true));
+            if (sharedPreferences.getBoolean(KEY_PREF_BOARD, true)) {
+                FirebaseMessaging.getInstance().subscribeToTopic(MainActivity.NOTIFICATION_TOPIC_BOARD);
+            } else {
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(MainActivity.NOTIFICATION_TOPIC_BOARD);
             }
         } else if (key.equals(KEY_PREF_SCOREBOOK)) {
             bundle.putBoolean(KEY_PREF_SCOREBOOK, sharedPreferences.getBoolean(KEY_PREF_SCOREBOOK, true));

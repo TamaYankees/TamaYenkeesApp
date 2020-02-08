@@ -27,6 +27,11 @@
             android:summary="@string/pref_summary_notif_schedule"
             android:defaultValue="true" />
         <CheckBoxPreference
+            android:title="@string/pref_title_board"
+            android:key="pref_key_board"
+            android:summary="@string/pref_summary_notif_board"
+            android:defaultValue="true" />
+        <CheckBoxPreference
             android:title="@string/pref_title_scorebook"
             android:key="pref_key_scorebook"
             android:summary="@string/pref_summary_notif_scorebook"

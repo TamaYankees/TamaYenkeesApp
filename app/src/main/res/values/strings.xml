@@ -19,6 +19,8 @@
     <string name="pref_title_notification">Receiving Notification</string>
     <string name="pref_title_schedule">Schedule</string>
     <string name="pref_summary_notif_schedule">Receive schedule notification</string>
+    <string name="pref_title_board">Board</string>
+    <string name="pref_summary_notif_board">Receive board notification</string>
     <string name="pref_title_scorebook">Scorebook</string>
     <string name="pref_summary_notif_scorebook">Receive scorebook notification</string>
     <string name="setting_label">Settings</string>

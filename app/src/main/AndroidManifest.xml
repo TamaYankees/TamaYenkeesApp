@@ -10,17 +10,17 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         <!--android:roundIcon="@mipmap/ic_launcher_round"-->    <!-- 上の applicationタグ内にあった -->
-        <!--&lt;!&ndash; [START fcm_default_icon] &ndash;&gt;-->
-        <!--&lt;!&ndash; Set custom default icon. This is used when no icon is set for incoming notification messages.-->
-             <!--See README(https://goo.gl/l4GJaQ) for more. &ndash;&gt;-->
+        <!-- [START fcm_default_icon] -->
+        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.-->
+             <!--See README(https://goo.gl/l4GJaQ) for more. -->
         <!--<meta-data-->
             <!--android:name="com.google.firebase.messaging.default_notification_icon"-->
             <!--android:resource="@drawable/t_yankees" />-->
-        <!--&lt;!&ndash; Set color used with incoming notification messages. This is used when no color is set for the incoming-->
-             <!--notification message. See README(https://goo.gl/6BKBk7) for more. &ndash;&gt;-->
-        <!--<meta-data-->
-            <!--android:name="com.google.firebase.messaging.default_notification_color"-->
-            <!--android:resource="@color/colorAccent" />-->
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming-->
+             <!--notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary" />
         <!-- [END fcm_default_icon] -->
         <activity android:name=".MainActivity"
             android:configChanges="orientation|screenSize">

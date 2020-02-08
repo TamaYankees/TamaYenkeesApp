@@ -45,6 +45,8 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     public static final String NOTIFICATION_TOPIC_SCHEDULE = "schedule";
     public static final String NOTIFICATION_TOPIC_SCHEDULE_TEST = "schedule_test";
+    public static final String NOTIFICATION_TOPIC_BOARD = "board";
+    public static final String NOTIFICATION_TOPIC_BOARD_TEST = "board_test";
     public static final String NOTIFICATION_TOPIC_SCOREBOOK = "scorebook";
     public static final String NOTIFICATION_TOPIC_SCOREBOOK_TEST = "scorebook_test";
     public static final String NOTIFICATION_TOPIC_APP = "app";
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final String URL_HP_ROOT = "http://t-yankees.sakura.ne.jp/";
     private final String WEBSB_CAL = URL_HP_ROOT + "websb3/s-calendar.cgi?";  //スケジュール一覧
+    private final String WEBSB_BOARD = URL_HP_ROOT + "websb3/s-webbbs.cgi?";  //メンバー専用掲示板
     private final String WEBSB_SCORE = URL_HP_ROOT + "websb3/s-team.cgi?";  //勝敗結果
     private final String WEBSB_PERSONAL_RECORD = URL_HP_ROOT + "websb3/s-kojin.cgi?";  //個人成績
     private List<Map<String, String>> mdata = new ArrayList<Map<String, String>>();
@@ -151,12 +154,15 @@ public class MainActivity extends AppCompatActivity {
         mdata.add(new HashMap<String, String>());
         mdata.add(new HashMap<String, String>());
         mdata.add(new HashMap<String, String>());
+        mdata.add(new HashMap<String, String>());
         mdata.get(0).put("title", getString(R.string.pref_title_schedule));
         mdata.get(0).put("url", WEBSB_CAL);
-        mdata.get(1).put("title", getString(R.string.pref_title_scorebook));
-        mdata.get(1).put("url", WEBSB_SCORE);
-        mdata.get(2).put("title", getString(R.string.pref_title_personal_record));
-        mdata.get(2).put("url", WEBSB_PERSONAL_RECORD);
+        mdata.get(1).put("title", getString(R.string.pref_title_board));
+        mdata.get(1).put("url", WEBSB_BOARD);
+        mdata.get(2).put("title", getString(R.string.pref_title_scorebook));
+        mdata.get(2).put("url", WEBSB_SCORE);
+        mdata.get(3).put("title", getString(R.string.pref_title_personal_record));
+        mdata.get(3).put("url", WEBSB_PERSONAL_RECORD);
     }
     private String getMenuTitle(int index) {
         if (mdata.size() == 0) {
@@ -305,9 +311,11 @@ public class MainActivity extends AppCompatActivity {
     }
     private void setReceiveNotificationSettings() {
         initialyzePreference(SettingsActivity.KEY_PREF_SCHEDULE, true);
+        initialyzePreference(SettingsActivity.KEY_PREF_BOARD, true);
         initialyzePreference(SettingsActivity.KEY_PREF_SCOREBOOK, true);
-        //念のためテスト系のトピックをUnsubscribeする
+        //念のためテスト系のFirebaseのトピックをUnsubscribeする
         FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_SCHEDULE_TEST);
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_BOARD_TEST);
         FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_SCOREBOOK_TEST);
         FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_APP_TEST);
         //schedule
@@ -321,6 +329,19 @@ public class MainActivity extends AppCompatActivity {
             FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_SCHEDULE);
             if (BuildConfig.DEBUG) {
                 FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_SCHEDULE_TEST);
+            }
+        }
+        //board
+        if (getPreferenceBoolean(SettingsActivity.KEY_PREF_BOARD)) {
+            FirebaseMessaging.getInstance().subscribeToTopic(NOTIFICATION_TOPIC_BOARD);
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "subscribe board_test");
+                FirebaseMessaging.getInstance().subscribeToTopic(NOTIFICATION_TOPIC_BOARD_TEST);
+            }
+        } else {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_BOARD);
+            if (BuildConfig.DEBUG) {
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(NOTIFICATION_TOPIC_BOARD_TEST);
             }
         }
         // scorebook
