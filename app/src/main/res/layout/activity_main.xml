@@ -1,58 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/ty_back"
-    tools:context="jp.ne.t_yankees.MainActivity">
+    android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/main_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:background="#cc233977"
-        android:elevation="4dp"
-        android:theme="@style/ToolbarTheme"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-    <!--android:theme="@style/ThemeOverlay.AppCompat.ActionBar"-->
+    <!-- 背景画像 -->
     <ImageView
-        android:id="@+id/ty_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="1dp"
-        android:src="@drawable/t_yankees"
-        />
-    <ListView
-        android:id="@+id/menuListview"
+        android:id="@+id/background_image_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="0dp"
-        android:background="@drawable/round_corner_list"></ListView>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
 
-        <TextView
-            android:id="@+id/messateTextview"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/layout_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="jp.ne.t_yankees.MainActivity">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/main_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:background="#cc233977"
+            android:elevation="4dp"
+            android:theme="@style/ToolbarTheme"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        <!--android:theme="@style/ThemeOverlay.AppCompat.ActionBar"-->
+        <ImageView
+            android:id="@+id/ty_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="1dp"
+            android:src="@drawable/t_yankees"
+            />
+        <ListView
+            android:id="@+id/menuListview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginBottom="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/round_corner"
-            android:padding="10dp"
-            android:text=""
-            android:visibility="invisible"
-            tools:singleLine="false"></TextView>
-    </RelativeLayout>
+            android:layout_marginTop="0dp"
+            android:background="@drawable/round_corner_list"></ListView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/messateTextview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/round_corner"
+                android:padding="10dp"
+                android:text=""
+                android:visibility="invisible"
+                tools:singleLine="false"></TextView>
+        </RelativeLayout>
+    </LinearLayout>
+</FrameLayout>
