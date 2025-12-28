@@ -3,11 +3,19 @@
     <string-array name="pref_background_entries">
         <item>Yankees</item>
         <item>TY Uniform</item>
+        <item>Members 1</item>
+        <item>Members 2</item>
+        <item>Members 3</item>
+        <item>Award 2024</item>
         <item>Wakabayashi</item>
     </string-array>
     <string-array name="pref_background_values">
         <item>ty_back</item>
         <item>ty_back2</item>
+        <item>members1</item>
+        <item>members2</item>
+        <item>members3</item>
+        <item>award2024</item>
         <item>wakabayashi</item>
     </string-array>
 </resources>

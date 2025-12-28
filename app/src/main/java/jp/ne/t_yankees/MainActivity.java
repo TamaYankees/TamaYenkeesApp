@@ -498,6 +498,18 @@ public class MainActivity extends AppCompatActivity {
             bgImages.put("ty_back2", new HashMap<Integer, Integer>());
             bgImages.get("ty_back2").put(Configuration.ORIENTATION_PORTRAIT, R.drawable.ty_back2);
             bgImages.get("ty_back2").put(Configuration.ORIENTATION_LANDSCAPE, R.drawable.ty_back2_h);
+            bgImages.put("members1", new HashMap<Integer, Integer>());
+            bgImages.get("members1").put(Configuration.ORIENTATION_PORTRAIT, R.drawable.members1);
+            bgImages.get("members1").put(Configuration.ORIENTATION_LANDSCAPE, R.drawable.members1);
+            bgImages.put("members2", new HashMap<Integer, Integer>());
+            bgImages.get("members2").put(Configuration.ORIENTATION_PORTRAIT, R.drawable.members2);
+            bgImages.get("members2").put(Configuration.ORIENTATION_LANDSCAPE, R.drawable.members2);
+            bgImages.put("members3", new HashMap<Integer, Integer>());
+            bgImages.get("members3").put(Configuration.ORIENTATION_PORTRAIT, R.drawable.members3);
+            bgImages.get("members3").put(Configuration.ORIENTATION_LANDSCAPE, R.drawable.members3);
+            bgImages.put("award2024", new HashMap<Integer, Integer>());
+            bgImages.get("award2024").put(Configuration.ORIENTATION_PORTRAIT, R.drawable.award2024);
+            bgImages.get("award2024").put(Configuration.ORIENTATION_LANDSCAPE, R.drawable.award2024);
             bgImages.put("wakabayashi", new HashMap<Integer, Integer>());
             bgImages.get("wakabayashi").put(Configuration.ORIENTATION_PORTRAIT, R.drawable.wakabayashi);
             bgImages.get("wakabayashi").put(Configuration.ORIENTATION_LANDSCAPE, R.drawable.wakabayashi_h);
