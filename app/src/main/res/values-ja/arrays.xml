@@ -3,6 +3,10 @@
     <string-array name="pref_background_entries">
         <item>ヤンキース</item>
         <item>TYユニフォーム</item>
+        <item>集合写真1</item>
+        <item>集合写真2</item>
+        <item>集合写真3</item>
+        <item>表彰状2024</item>
         <item>若林さん</item>
     </string-array>
 </resources>
