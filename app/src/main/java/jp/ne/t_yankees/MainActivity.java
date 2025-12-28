@@ -472,9 +472,12 @@ public class MainActivity extends AppCompatActivity {
     private void setBackgroundImage(int orientation) {
         String background = getPreferenceString(SettingsActivity.KEY_PREF_BACKGROUND);
         int bgImageId = getBackgroundImageId(background, orientation);
-        if (bgImageId != -1) {
-            LinearLayout layout = (LinearLayout) findViewById(R.id.layout_main);
-            layout.setBackgroundResource(bgImageId);
+        // LinearLayoutではなく、ImageViewに対してリソースをセットする
+        ImageView bgImageView = (ImageView) findViewById(R.id.background_image_view);
+        try {
+            bgImageView.setImageResource(bgImageId);
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
     /**
