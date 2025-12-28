@@ -1,5 +1,27 @@
 * 状況／TODO
 
+ 
+** 開発環境の移行
+
+開発環境の移行
+
+  2025-12-27 に確認したところ以下の状態となっていて、Androidの開発環境が大幅に変わったため *最新の環境ではビルドできないことが分かった*
+   - 最終コミット 2020-02-09
+   - Android Studio 3.0.1 ? / 2022.3  (おそらく一度更新している)
+
+     
+  ChatGPT に問い合わせ、開発環境を新しくし、ビルドが通るように設定を変更した。
+  https://chatgpt.com/share/694fb8b5-ef2c-800c-bea3-8b0a715b640c
+
+  変更点の概要
+  - Java を 1.8から Java 17に更新
+  - Gradle 7.6 に更新
+  - AGP 7.4.2
+  - 古い compile / jcenter 問題を解決
+  - Lint を無視して ビルドを通している
+  - AndroidX 移行
+  - Firebase Messaging v23 系に移行a
+
 ** 通知
 https://console.firebase.google.com/project/t-yankees/notification
 に tama.yankees@gmail.com でログインするとこのアプリに通知を飛ばせるようになった。

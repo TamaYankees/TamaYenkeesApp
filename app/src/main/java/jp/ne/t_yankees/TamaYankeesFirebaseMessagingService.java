@@ -1,12 +1,16 @@
 package jp.ne.t_yankees;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.annotation.NonNull;
+
+import android.os.Build;
 import android.util.Log;
 import java.util.Map;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -19,6 +23,12 @@ import com.google.firebase.messaging.RemoteMessage;
 public class TamaYankeesFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "TamaYankeesFirebaseMsgService";
+    private static final String CHANNEL_ID = "ty_default_channel";
+    @Override
+    public void onNewToken(@NonNull String token) {
+        super.onNewToken(token);
+        Log.d("FCM", "New token: " + token);
+    }
 
     /**
      * Called when message is received.
@@ -34,9 +44,14 @@ public class TamaYankeesFirebaseMessagingService extends FirebaseMessagingServic
             Log.d(TAG, "getFrom() : " + remoteMessage.getFrom());
             Log.d(TAG, "getMessageId() : " + remoteMessage.getMessageId());
             Log.d(TAG, "getMessageType() : " + remoteMessage.getMessageType());
-            Log.d(TAG, "getNotification().getTitle() : " + remoteMessage.getNotification().getTitle());
-            Log.d(TAG, "getNotification().getBody() : " + remoteMessage.getNotification().getBody());
-            Log.d(TAG, "getNotification().getTag() : " + remoteMessage.getNotification().getTag());
+            RemoteMessage.Notification notif = remoteMessage.getNotification();
+            if (notif != null) {
+                Log.d(TAG, "getNotification().getTitle() : " + notif.getTitle());
+                Log.d(TAG, "getNotification().getBody() : " + notif.getBody());
+                Log.d(TAG, "getNotification().getTag() : " + notif.getTag());
+            } else {
+                Log.d(TAG, "*** fail to get Notification instance.");
+            }
             Log.d(TAG, "getSentTime() : " + remoteMessage.getSentTime());
             Log.d(TAG, "getTo() : " + remoteMessage.getTo());
             Log.d(TAG, "getTtl()  : " + remoteMessage.getTtl());
@@ -52,11 +67,14 @@ public class TamaYankeesFirebaseMessagingService extends FirebaseMessagingServic
         if (data.containsKey("ymd")) {
             params.append(data.get("ymd").toString());
         }
-        sendMessage(remoteMessage.getNotification().getTitle(),
-                    remoteMessage.getNotification().getBody(),
+        RemoteMessage.Notification notification = remoteMessage.getNotification();
+        if (notification != null) {
+            sendMessage(notification.getTitle(),
+                    notification.getBody(),
                     url,
                     params.toString()
-                );
+            );
+        }
     }
 // 参考) 時間がかかる場合は以下のように処理する
 //    /**
@@ -84,22 +102,37 @@ public class TamaYankeesFirebaseMessagingService extends FirebaseMessagingServic
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                intent,
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+        );
         intent.putExtra("name1", "value1");
         intent.putExtra("name2", "value2");
         intent.putExtra("name3", "value3");
 
 //        String channelId = getString(R.string.default_notification_channel_id);
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        // Channel 作成
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "多摩ヤンキース通知",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            notificationManager.createNotificationChannel(channel);
+        }
         NotificationCompat.Builder notificationBuilder =
-//                new NotificationCompat.Builder(this, channelId)
-                new NotificationCompat.Builder(this)
-//                        .setSmallIcon(R.drawable.ic_stat_ic_notification)
-                        .setContentTitle("多摩ヤンキースからの通知")   // 1行目
-                        .setContentText(messageBody)                // 2行目
-                        .setSubText("3行目")                        // 3行目
-                        .setAutoCancel(true)                        // タップで通知領域から削除する
+                new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.googleg_standard_color_18) // ← 必須
+                        .setContentTitle("多摩ヤンキースからの通知")
+                        .setContentText(messageBody)
+                        .setAutoCancel(true)
                         .setSound(defaultSoundUri)
 //                        .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS)
                         .setContentIntent(pendingIntent);
@@ -114,10 +147,6 @@ public class TamaYankeesFirebaseMessagingService extends FirebaseMessagingServic
 ////        intent.putExtra(MainActivity.ARG_TYPE, contentType);
 //        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 //        notificationBuilder.setContentIntent(contentIntent);
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
 //        // Since android Oreo notification channel is needed.
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 //            NotificationChannel channel = new NotificationChannel(channelId,

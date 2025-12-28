@@ -1,6 +1,10 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+}
 
 android {
+    namespace "jp.ne.t_yankees"
     signingConfigs {
         config {
             keyAlias 'tama-yankees'
@@ -9,10 +13,10 @@ android {
             storePassword 'ty5555'
         }
     }
-    compileSdkVersion 26
+    compileSdkVersion 34
     defaultConfig {
         applicationId "jp.ne.t_yankees"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
         versionName "1.20"
@@ -31,10 +35,16 @@ android {
             signingConfig signingConfigs.config
         }
     }
+    buildFeatures {
+        buildConfig true
+    }
     android.applicationVariants.all { variant ->
         variant.outputs.all {
             outputFileName = "${variant.applicationId}-${variant.versionName}-${variant.name}.apk"
         }
+    }
+    lint {
+        abortOnError false
     }
     lintOptions {
         disable 'MissingTranslation'
@@ -43,13 +53,19 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile 'com.google.firebase:firebase-core:11.8.0'
-    compile 'com.google.firebase:firebase-messaging:11.8.0'
-}
 
-apply plugin: 'com.google.gms.google-services'
+    // AndroidX 基本
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'androidx.annotation:annotation:1.8.0'
+
+    // Firebase (BOM 管理)
+    implementation platform('com.google.firebase:firebase-bom:32.7.4')
+    implementation 'com.google.firebase:firebase-messaging'
+
+    // Test
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}

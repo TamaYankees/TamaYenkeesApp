@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context="jp.ne.t_yankees.WebViewActivity">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/webview_toolbar"
         android:layout_width="match_parent"
         android:layout_height="42dp"
