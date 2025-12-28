@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_POST_DATA = "jp.ne.t_yankees.POST_DATA";
     private static final int REQUEST_CODE_SETTING = 1;
 
-    private final String URL_HP_ROOT = "http://t-yankees.sakura.ne.jp/";
+    private final String URL_HP_ROOT = "https://t-yankees.sakura.ne.jp/";
     private final String WEBSB_CAL = URL_HP_ROOT + "websb3/s-calendar.cgi?";  //スケジュール一覧
     private final String WEBSB_BOARD = URL_HP_ROOT + "websb3/s-webbbs.cgi?";  //メンバー専用掲示板
     private final String WEBSB_SCORE = URL_HP_ROOT + "websb3/s-team.cgi?";  //勝敗結果
